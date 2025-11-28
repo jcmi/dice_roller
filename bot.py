@@ -20,19 +20,17 @@ async def on_ready() -> None:
     print(f"Logged in as {bot.user}")
 
 
-@bot.tree.command(description="Roll heroic-mode D&D stats (4d6, reroll 1/2 once, drop lowest)")
+@bot.tree.command(description="Roll heroic-mode D&D stats (4d6, reroll 1s once, drop lowest)")
 @app_commands.describe(
     sets="Number of stat sets (1-12)",
-    columns="Number of columns in grid (1-6)",
-    seed="Optional RNG seed for reproducible rolls",
 )
 async def roll(
-    interaction: discord.Interaction, sets: int = 6, columns: int = 3, seed: int | None = None
+    interaction: discord.Interaction, sets: int = 6
 ) -> None:
     # Clamp to avoid spam in shared servers.
     sets = max(1, min(sets, 12))
 
-    rng = Random(seed) if seed is not None else Random()
+    rng = Random()
     results = roll_sets(sets, rng)
     header = format_discord_header()
     body = format_discord_sets(results)

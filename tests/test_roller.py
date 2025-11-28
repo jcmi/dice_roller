@@ -6,7 +6,7 @@ from dice_roller.roller import DieResult, format_grid, format_set, roll_heroic_s
 def test_reroll_happens_on_one_or_two():
     rng = Random(0)
     result = roll_heroic_set(rng)
-    assert any(d.initial in (1, 2) for d in result.dice)
+    assert any(d.initial == 1 for d in result.dice)
     assert all(d.final >= 1 for d in result.dice)
 
 

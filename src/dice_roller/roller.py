@@ -32,7 +32,7 @@ class SetResult:
 
 def roll_die(rng: Random) -> DieResult:
     first = rng.randint(1, 6)
-    if first in (1, 2):
+    if first == 1:
         second = rng.randint(1, 6)
         return DieResult(initial=first, rerolled=second)
     return DieResult(initial=first, rerolled=None)

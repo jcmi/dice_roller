@@ -9,7 +9,7 @@ from .roller import format_discord_header, format_discord_sets, roll_sets
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Roll heroic-mode D&D stats (4d6, reroll 1s/2s once, drop lowest)."
+        description="Roll heroic-mode D&D stats (4d6, reroll 1s once, drop lowest)."
     )
     parser.add_argument(
         "-s",
@@ -17,18 +17,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=int,
         default=6,
         help="Number of stat sets to roll (default: 6).",
-    )
-    parser.add_argument(
-        "-c",
-        "--columns",
-        type=int,
-        default=3,
-        help="Column count for grid output (default: 3).",
-    )
-    parser.add_argument(
-        "--seed",
-        type=int,
-        help="Optional RNG seed for reproducible results.",
     )
     parser.add_argument(
         "-o",
@@ -44,10 +32,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.sets < 1:
         raise SystemExit("Error: --sets must be at least 1.")
-    if args.columns < 1:
-        raise SystemExit("Error: --columns must be at least 1.")
 
-    rng = Random(args.seed)
+    rng = Random()
     results = roll_sets(args.sets, rng)
     header = format_discord_header()
     body = format_discord_sets(results)
