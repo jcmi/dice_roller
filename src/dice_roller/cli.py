@@ -9,7 +9,7 @@ from .roller import format_discord_header, format_discord_sets, roll_sets
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Roll heroic-mode D&D stats (4d6, reroll 1s once, drop lowest)."
+        description="Roll heroic-mode D&D stats (4d6, reroll 1s until not 1, drop lowest)."
     )
     parser.add_argument(
         "-s",

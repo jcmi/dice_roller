@@ -20,7 +20,7 @@ async def on_ready() -> None:
     print(f"Logged in as {bot.user}")
 
 
-@bot.tree.command(description="Roll heroic-mode D&D stats (4d6, reroll 1s once, drop lowest)")
+@bot.tree.command(description="Roll heroic-mode D&D stats (4d6, reroll 1s until not 1, drop lowest)")
 @app_commands.describe(
     sets="Number of stat sets (1-12)",
 )

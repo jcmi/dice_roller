@@ -19,7 +19,7 @@ class DieResult:
     def formatted(self) -> str:
         if self.rerolled is None:
             return str(self.initial)
-        return f"{self.initial}\u2192{self.rerolled}*"  # arrow marks reroll
+        return f"{self.initial}->{self.rerolled}"
 
 
 @dataclass(frozen=True)
@@ -28,6 +28,7 @@ class SetResult:
     kept: Sequence[int]
     dropped: Sequence[int]
     dice: Sequence[DieResult]
+    dropped_index: int
 
 
 def roll_die(rng: Random) -> DieResult:
@@ -53,6 +54,7 @@ def roll_heroic_set(rng: Random) -> SetResult:
         kept=kept_values,
         dropped=[dropped_value],
         dice=dice,
+        dropped_index=dropped_idx,
     )
 
 
@@ -63,13 +65,16 @@ def roll_sets(count: int, rng: Random | None = None) -> List[SetResult]:
 
 def format_set(idx: int, result: SetResult) -> List[str]:
     header = f"Set {idx}: {result.total}"
-    rolls = ", ".join(d.formatted() for d in result.dice)
+    rolls = ", ".join(
+        d.formatted() + ("*" if i == result.dropped_index else "")
+        for i, d in enumerate(result.dice)
+    )
     rolls_line = f"Rolls: {rolls}"
 
     kept_str = ", ".join(str(v) for v in result.kept)
     dropped_str = ", ".join(str(v) for v in result.dropped)
     ledger = f"Kept: [{kept_str}]  Dropped: [{dropped_str}]"
-    note = "(* indicates a reroll; lowest final die dropped)"
+    note = "(-> reroll; * dropped die)"
 
     return [header, rolls_line, ledger, note]
 
@@ -81,10 +86,16 @@ def format_discord_header(title: str = "I rolled these HEROICALLY!") -> str:
 def format_discord_sets(results: Iterable[SetResult]) -> str:
     results = list(results)
     totals_line = "Totals: " + "  ".join(str(res.total) for res in results)
-    detail_lines = [
-        f"{res.total}: " + ", ".join(d.formatted() for d in res.dice) for res in results
-    ]
-    legend = "(* reroll; lowest final die dropped)"
+    detail_lines = []
+    for res in results:
+        parts = []
+        for idx, d in enumerate(res.dice):
+            piece = d.formatted()
+            if idx == res.dropped_index:
+                piece += "*"
+            parts.append(piece)
+        detail_lines.append(f"{res.total}: " + ", ".join(parts))
+    legend = "(-> reroll; * dropped die)"
     return "\n".join([totals_line, ""] + detail_lines + [legend])
 
 

@@ -1,6 +1,13 @@
 from random import Random
 
-from dice_roller.roller import DieResult, format_grid, format_set, roll_heroic_set, roll_sets
+from dice_roller.roller import (
+    DieResult,
+    format_discord_sets,
+    format_grid,
+    format_set,
+    roll_heroic_set,
+    roll_sets,
+)
 
 
 def test_reroll_happens_on_one_or_two():
@@ -12,6 +19,14 @@ def test_reroll_happens_on_one_or_two():
             assert d.final != 1
         else:
             assert d.final == d.initial
+
+
+def test_format_marks_rerolls_and_drop():
+    rng = Random(0)
+    res = roll_heroic_set(rng)
+    text = format_discord_sets([res])
+    assert "->" in text
+    assert "*" in text
 
 
 def test_sets_have_expected_length_and_total_computation():
