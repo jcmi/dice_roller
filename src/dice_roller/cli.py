@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 from random import Random
 
-from .roller import format_grid, format_set, roll_sets
+from .roller import format_discord_header, format_discord_sets, roll_sets
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -49,13 +49,14 @@ def main(argv: list[str] | None = None) -> int:
 
     rng = Random(args.seed)
     results = roll_sets(args.sets, rng)
-    rendered_sets = [format_set(idx + 1, res) for idx, res in enumerate(results)]
-    grid = format_grid(rendered_sets, columns=args.columns)
+    header = format_discord_header()
+    body = format_discord_sets(results)
+    output = f"{header}\n{body}"
 
-    print(grid)
+    print(output)
 
     if args.output:
-        args.output.write_text(grid + "\n", encoding="utf-8")
+        args.output.write_text(output + "\n", encoding="utf-8")
         print(f"\nSaved results to {args.output}")
 
     return 0

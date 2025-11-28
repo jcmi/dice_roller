@@ -72,6 +72,20 @@ def format_set(idx: int, result: SetResult) -> List[str]:
     return [header, rolls_line, ledger, note]
 
 
+def format_discord_header(title: str = "I rolled these HEROICALLY!") -> str:
+    return f"__{title}__"
+
+
+def format_discord_sets(results: Iterable[SetResult]) -> str:
+    results = list(results)
+    totals_line = "Totals: " + "  ".join(str(res.total) for res in results)
+    detail_lines = [
+        f"{res.total}: " + ", ".join(d.formatted() for d in res.dice) for res in results
+    ]
+    legend = "(* reroll; lowest final die dropped)"
+    return "\n".join([totals_line, ""] + detail_lines + [legend])
+
+
 def format_grid(sets: Iterable[List[str]], columns: int = 3) -> str:
     cells = list(sets)
     width = max(len(line) for cell in cells for line in cell)

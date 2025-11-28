@@ -7,7 +7,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dice_roller.roller import format_grid, format_set, roll_sets
+from dice_roller.roller import format_discord_header, format_discord_sets, roll_sets
 
 
 intents = discord.Intents.default()
@@ -31,14 +31,12 @@ async def roll(
 ) -> None:
     # Clamp to avoid spam in shared servers.
     sets = max(1, min(sets, 12))
-    columns = max(1, min(columns, 6))
 
     rng = Random(seed) if seed is not None else Random()
     results = roll_sets(sets, rng)
-    rendered = [format_set(i + 1, res) for i, res in enumerate(results)]
-    grid = format_grid(rendered, columns=columns)
-
-    content = f"```\n{grid}\n```"
+    header = format_discord_header()
+    body = format_discord_sets(results)
+    content = f"```\n{header}\n{body}\n```"
     await interaction.response.send_message(content)
 
 
