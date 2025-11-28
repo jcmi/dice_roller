@@ -7,7 +7,11 @@ def test_reroll_happens_on_one_or_two():
     rng = Random(0)
     result = roll_heroic_set(rng)
     assert any(d.initial == 1 for d in result.dice)
-    assert all(d.final >= 1 for d in result.dice)
+    for d in result.dice:
+        if d.initial == 1:
+            assert d.final != 1
+        else:
+            assert d.final == d.initial
 
 
 def test_sets_have_expected_length_and_total_computation():
