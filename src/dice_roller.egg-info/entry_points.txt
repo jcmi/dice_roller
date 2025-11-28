@@ -1,2 +1,0 @@
-[console_scripts]
-dice-roller = dice_roller.cli:main
